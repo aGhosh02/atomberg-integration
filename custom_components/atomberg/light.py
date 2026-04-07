@@ -108,8 +108,10 @@ class AtombergFanLightEntity(AtombergEntity, LightEntity):
             cmd[ATTR_LIGHT_MODE] = FAN_LED_EFFECTS[effect]
 
         await self._device.async_send_light_command(cmd)
+        self.update_ha_state_if_required()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn off entity."""
         cmd = {ATTR_LED: False}
         await self._device.async_send_light_command(cmd)
+        self.update_ha_state_if_required()

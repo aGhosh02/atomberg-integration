@@ -59,3 +59,4 @@ class SetTimerSelect(AtombergEntity, SelectEntity):
     async def async_select_option(self, option: str) -> None:
         """When selected an option."""
         await self._device.async_set_timer(self.options.index(option))
+        self.update_ha_state_if_required()

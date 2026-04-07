@@ -49,7 +49,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         udp_listener = domain_data[UDP_LISTENER]
 
     coordinator = AtombergDataUpdateCoordinator(
-        hass=hass, api=api, udp_listener=udp_listener
+        hass=hass, api=api, udp_listener=udp_listener, config_entry=entry
     )
     domain_data[ENTRIES][entry.entry_id] = coordinator
 

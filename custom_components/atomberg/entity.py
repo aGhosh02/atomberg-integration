@@ -101,12 +101,20 @@ class AtombergEntity(CoordinatorEntity, Entity):
 
     @callback
     def _handle_coordinator_update(self) -> None:
-        if self.coordinator.data["device_id"] != self._device.id:
+        data = self.coordinator.data
+        if not data:
+            return
+
+        if data.get("source") == "cloud_poll":
+            self.update_ha_state_if_required()
+            return
+
+        if data.get("device_id") != self._device.id:
             return
 
         state = {}
-        # Decode the state data
-        if state_string := self.coordinator.data.get("state_string"):
+        # Decode the state data from UDP broadcast
+        if state_string := data.get("state_string"):
             value = state_string.split(",")[0].strip()
             if not value.isnumeric():
                 return
@@ -142,7 +150,7 @@ class AtombergEntity(CoordinatorEntity, Entity):
                 state[ATTR_LIGHT_MODE] = light_mode
 
         self._device.update_state({**state, ATTR_IS_ONLINE: True})
-        self._device.update_ip_address(self.coordinator.data.get("ip_address"))
+        self._device.update_ip_address(data.get("ip_address"))
         self._device.update_last_seen(utcnow().timestamp())
         self.update_ha_state_if_required()
 

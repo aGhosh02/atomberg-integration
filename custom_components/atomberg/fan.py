@@ -79,11 +79,14 @@ class AtombergFanEntity(AtombergEntity, FanEntity):
                     ORDERED_FAN_SPEEDS, percentage=percentage
                 )
             )
+        self.update_ha_state_if_required()
 
     async def async_turn_on(self, *args, **kwargs: Any) -> None:
         """Turn on the entity."""
         await self._device.async_turn_on()
+        self.update_ha_state_if_required()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn off the entity."""
         await self._device.async_turn_off()
+        self.update_ha_state_if_required()
